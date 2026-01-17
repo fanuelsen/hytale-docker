@@ -1,0 +1,23 @@
+services:
+  hytale:
+    build: .
+    container_name: hytale-server
+    ports:
+      - "5520:5520/udp"
+    volumes:
+      - ./server-files:/home/hytale/server-files
+    environment:
+      - DEFAULT_PORT=5520
+      - SERVER_NAME=Hytale Server
+      - MAX_PLAYERS=50
+      - VIEW_DISTANCE=12
+      - MAX_MEMORY=12G
+      - MIN_MEMORY=8G
+      - JVM_ARGS=
+      - AUTH_MODE=authenticated
+      - DISABLE_SENTRY=true
+      - ACCEPT_EARLY_PLUGINS=false
+      - DOWNLOAD_ON_START=true
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
