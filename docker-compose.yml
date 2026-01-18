@@ -1,6 +1,6 @@
 services:
   hytale:
-    build: .
+    image: ghcr.io/fanuelsen/hytale-docker:latest
     container_name: hytale-server
     ports:
       - "5520:5520/udp"

@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "version": "PTDL_v2"
+  },
+  "exported_at": "2025-01-17T20:00:00+00:00",
+  "name": "Hytale",
+  "author": "fanuelsen@github.com",
+  "description": "Hytale dedicated server with automated setup and OAuth authentication.",
+  "features": [],
+  "docker_images": {
+    "ghcr.io/fanuelsen/hytale-docker:latest": "ghcr.io/fanuelsen/hytale-docker:latest"
+  },
+  "startup": "cd /home/hytale/server-files && /home/hytale/scripts/start.sh",
+  "config": {
+    "files": "{}",
+    "startup": "{\"done\": \"Hytale Server Booted!\"}",
+    "logs": "{}",
+    "stop": "stop"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\necho \"Using pre-built container - no installation needed\"\nmkdir -p /mnt/server/Server\necho \"Installation complete\"",
+      "container": "ghcr.io/fanuelsen/hytale-docker:latest",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Max Memory",
+      "description": "Max JVM heap size (e.g., 8G)",
+      "env_variable": "MAX_MEMORY",
+      "default_value": "8G",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Min Memory",
+      "description": "Min JVM heap size (e.g., 4G)",
+      "env_variable": "MIN_MEMORY",
+      "default_value": "4G",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Server Name",
+      "description": "Server display name",
+      "env_variable": "SERVER_NAME",
+      "default_value": "Hytale Server",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:64",
+      "field_type": "text"
+    },
+    {
+      "name": "Max Players",
+      "description": "Maximum concurrent players",
+      "env_variable": "MAX_PLAYERS",
+      "default_value": "20",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|integer|min:1|max:200",
+      "field_type": "text"
+    },
+    {
+      "name": "View Distance",
+      "description": "View radius in chunks",
+      "env_variable": "VIEW_DISTANCE",
+      "default_value": "12",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|integer|min:4|max:32",
+      "field_type": "text"
+    },
+    {
+      "name": "Auth Mode",
+      "description": "authenticated or offline",
+      "env_variable": "AUTH_MODE",
+      "default_value": "authenticated",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    }
+  ]
+}

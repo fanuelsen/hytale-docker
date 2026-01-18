@@ -4,20 +4,24 @@ set -e
 SERVER_FILES="/home/hytale/server-files"
 MACHINE_ID_DIR="$SERVER_FILES/.machine-id"
 
-# Generate persistent machine ID for Hytale auth
+# Generate persistent machine ID for Hytale auth (optional - may fail without root)
 setup_machine_id() {
+    # Try to create machine-id, but don't fail if we can't (e.g., in Pterodactyl)
     if [ ! -f "$MACHINE_ID_DIR/machine-id" ]; then
-        mkdir -p "$MACHINE_ID_DIR"
-        UUID=$(cat /proc/sys/kernel/random/uuid)
-        MACHINE_ID=$(echo "$UUID" | tr -d '-')
-
-        echo "$MACHINE_ID" > "$MACHINE_ID_DIR/machine-id"
-        echo "$UUID" > "$MACHINE_ID_DIR/uuid"
+        if mkdir -p "$MACHINE_ID_DIR" 2>/dev/null; then
+            UUID=$(cat /proc/sys/kernel/random/uuid)
+            MACHINE_ID=$(echo "$UUID" | tr -d '-')
+            echo "$MACHINE_ID" > "$MACHINE_ID_DIR/machine-id" 2>/dev/null || true
+            echo "$UUID" > "$MACHINE_ID_DIR/uuid" 2>/dev/null || true
+        fi
     fi
 
-    cp "$MACHINE_ID_DIR/machine-id" /etc/machine-id
-    mkdir -p /var/lib/dbus
-    cp "$MACHINE_ID_DIR/machine-id" /var/lib/dbus/machine-id
+    # Try to copy to system locations (requires root)
+    if [ -f "$MACHINE_ID_DIR/machine-id" ]; then
+        cp "$MACHINE_ID_DIR/machine-id" /etc/machine-id 2>/dev/null || true
+        mkdir -p /var/lib/dbus 2>/dev/null || true
+        cp "$MACHINE_ID_DIR/machine-id" /var/lib/dbus/machine-id 2>/dev/null || true
+    fi
 }
 
 # Graceful shutdown handler
@@ -40,17 +44,21 @@ shutdown() {
 
 trap shutdown TERM INT
 
-# Setup
+# Setup (don't fail if permissions don't allow)
 setup_machine_id
 
-# Fix ownership only if needed (volume may be mounted with wrong permissions)
-if [ "$(stat -c %u "$SERVER_FILES")" != "1000" ]; then
-    chown -R hytale:hytale "$SERVER_FILES"
+# Fix ownership only if we have permission and it's needed
+if [ "$(id -u)" = "0" ] && [ "$(stat -c %u "$SERVER_FILES" 2>/dev/null)" != "1000" ]; then
+    chown -R hytale:hytale "$SERVER_FILES" 2>/dev/null || true
 fi
 
-# Start server as hytale user
 cd "$SERVER_FILES"
-su -s /bin/sh hytale -c "/home/hytale/scripts/start.sh" &
-CHILD_PID=$!
 
-wait $CHILD_PID
+# Run start.sh - either as hytale user (if root) or directly (if not root)
+if [ "$(id -u)" = "0" ]; then
+    su -s /bin/sh hytale -c "/home/hytale/scripts/start.sh" &
+    CHILD_PID=$!
+    wait $CHILD_PID
+else
+    exec /home/hytale/scripts/start.sh
+fi
