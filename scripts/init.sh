@@ -1,7 +1,12 @@
 #!/bin/sh
 set -e
 
-SERVER_FILES="/home/hytale/server-files"
+# Support both Docker Compose (/home/hytale/server-files) and Pterodactyl (/home/container)
+if [ -d "/home/container" ]; then
+    SERVER_FILES="/home/container"
+else
+    SERVER_FILES="/home/hytale/server-files"
+fi
 MACHINE_ID_DIR="$SERVER_FILES/.machine-id"
 
 # Generate persistent machine ID for Hytale auth (optional - may fail without root)
