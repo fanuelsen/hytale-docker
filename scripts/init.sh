@@ -1,6 +1,12 @@
 #!/bin/sh
 set -e
 
+# Detect Pterodactyl install phase - /mnt/server exists during install, not runtime
+if [ -d "/mnt/server" ] && [ -w "/mnt/server" ]; then
+    echo "[hytale] Install phase detected, skipping (download happens on first start)"
+    exit 0
+fi
+
 SERVER_FILES="/home/container"
 MACHINE_ID_DIR="$SERVER_FILES/.machine-id"
 
