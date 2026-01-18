@@ -113,6 +113,12 @@ docker compose restart
 
 The server uses **UDP port 5520** (QUIC protocol). Ensure your firewall and router forward UDP 5520 to your server.
 
+## Pterodactyl
+
+Import `egg-hytale.json` into your Pterodactyl panel (Admin → Nests → Import Egg). The egg uses the pre-built container from `ghcr.io/fanuelsen/hytale-docker:latest`.
+
+On first start, check the console for OAuth URLs to authenticate the downloader and server.
+
 ## Data Persistence
 
 Server files are stored in `./server-files/` which includes:
