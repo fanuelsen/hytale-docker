@@ -2,7 +2,7 @@
   "meta": {
     "version": "PTDL_v2"
   },
-  "exported_at": "2025-01-17T20:00:00+00:00",
+  "exported_at": "2025-01-18T12:00:00+00:00",
   "name": "Hytale",
   "author": "fanuelsen@github.com",
   "description": "Hytale dedicated server with automated setup and OAuth authentication.",
@@ -10,7 +10,7 @@
   "docker_images": {
     "ghcr.io/fanuelsen/hytale-docker:latest": "ghcr.io/fanuelsen/hytale-docker:latest"
   },
-  "startup": "cd /home/hytale/server-files && /home/hytale/scripts/start.sh",
+  "startup": "/home/hytale/scripts/start.sh",
   "config": {
     "files": "{}",
     "startup": "{\"done\": \"Hytale Server Booted!\"}",
@@ -19,9 +19,9 @@
   },
   "scripts": {
     "installation": {
-      "script": "#!/bin/bash\necho \"Using pre-built container - no installation needed\"\nmkdir -p /mnt/server/Server\necho \"Installation complete\"",
-      "container": "ghcr.io/fanuelsen/hytale-docker:latest",
-      "entrypoint": "bash"
+      "script": "#!/bin/bash\necho '[hytale] Installation handled by container on first start'\nmkdir -p /mnt/server\necho 'done'",
+      "container": "alpine:latest",
+      "entrypoint": "ash"
     }
   },
   "variables": [
@@ -42,7 +42,7 @@
       "default_value": "4G",
       "user_viewable": true,
       "user_editable": true,
-      "rules": "nullable|string",
+      "rules": "required|string",
       "field_type": "text"
     },
     {

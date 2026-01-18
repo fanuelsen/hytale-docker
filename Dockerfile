@@ -7,7 +7,8 @@ LABEL org.opencontainers.image.title="Hytale Server" \
 RUN apk add --no-cache curl ca-certificates unzip gcompat libgcc libstdc++ jq \
     && addgroup -g 1000 hytale \
     && adduser -u 1000 -G hytale -h /home/hytale -s /bin/sh -D hytale \
-    && mkdir -p /home/hytale/server-files
+    && mkdir -p /home/container \
+    && chown hytale:hytale /home/container
 
 ENV DEFAULT_PORT=5520 \
     SERVER_NAME="Hytale Server" \
@@ -26,7 +27,7 @@ COPY --chown=hytale:hytale --chmod=755 ./scripts/*.sh /home/hytale/scripts/
 WORKDIR /home/hytale
 
 EXPOSE 5520/udp
-VOLUME ["/home/hytale/server-files"]
+VOLUME ["/home/container"]
 
 HEALTHCHECK --start-period=5m \
             --interval=30s \

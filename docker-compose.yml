@@ -5,7 +5,7 @@ services:
     ports:
       - "5520:5520/udp"
     volumes:
-      - ./server-files:/home/hytale/server-files
+      - ./server-files:/home/container
     environment:
       - DEFAULT_PORT=5520
       - SERVER_NAME=Hytale Server

@@ -1,12 +1,7 @@
 #!/bin/sh
 set -e
 
-# Support both Docker Compose (/home/hytale/server-files) and Pterodactyl (/home/container)
-if [ -d "/home/container" ]; then
-    SERVER_FILES="/home/container"
-else
-    SERVER_FILES="/home/hytale/server-files"
-fi
+SERVER_FILES="/home/container"
 SERVER_DIR="$SERVER_FILES/Server"
 SERVER_JAR="$SERVER_DIR/HytaleServer.jar"
 DOWNLOADER="$SERVER_FILES/hytale-downloader-linux-amd64"
