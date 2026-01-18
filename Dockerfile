@@ -7,8 +7,10 @@ LABEL org.opencontainers.image.title="Hytale Server" \
 RUN apk add --no-cache curl ca-certificates unzip gcompat libgcc libstdc++ jq \
     && addgroup -g 1000 hytale \
     && adduser -u 1000 -G hytale -h /home/hytale -s /bin/sh -D hytale \
-    && mkdir -p /home/container \
-    && chown hytale:hytale /home/container
+    && mkdir -p /home/container /var/lib/dbus \
+    && chown hytale:hytale /home/container \
+    && cat /proc/sys/kernel/random/uuid | tr -d '-' > /etc/machine-id \
+    && cp /etc/machine-id /var/lib/dbus/machine-id
 
 ENV DEFAULT_PORT=5520 \
     SERVER_NAME="Hytale Server" \
